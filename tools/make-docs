@@ -1,0 +1,30 @@
+#!/bin/bash
+
+readonly PKG=$1
+readonly DOCS=$2
+
+readonly ODOC=$(which odoc)
+readonly LIB=./local-install
+
+readonly CMT_FILES=*/*.cmti
+readonly ODOC_FILES=$(echo ${CMT_FILES} | sed "s/cmti/odoc/g")
+
+echo "<< Compiling docs..."
+for file in ${CMT_FILES}; do
+  ${ODOC} compile \
+    -I ${LIB} \
+    --pkg=${PKG} \
+    ${file}
+done
+echo ">> Done!"
+
+echo "<< Generating HTML..."
+for file in ${ODOC_FILES}; do
+  ${ODOC} html \
+    -I ${LIB} \
+    -o ${DOCS} \
+    --syntax=re \
+    --semantic-uris \
+    ${file}
+done
+echo ">> Done!"
