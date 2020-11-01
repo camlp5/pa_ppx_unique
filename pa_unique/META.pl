@@ -27,6 +27,5 @@ description = "pa_ppx_unique deriver"
   requires(byte) = "camlp5,pa_ppx.deriving_plugins.show.link,pa_ppx.params_runtime"
   archive(byte) = "pa_deriving_unique.cmo"
   )
-  requires = "pa_ppx_unique.runtime,camlp5,pa_ppx.deriving_plugins.show,pa_ppx.runtime,pa_ppx.params_runtime"
 
 EOF
