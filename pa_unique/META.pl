@@ -28,4 +28,6 @@ description = "pa_ppx_unique deriver"
   archive(byte) = "pa_deriving_unique.cmo"
   )
 
+  requires = "pa_ppx_unique.runtime"
+
 EOF
