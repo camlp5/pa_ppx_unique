@@ -39,8 +39,8 @@ type pertype_customization_t = {
 ;
 
 type t = {
-  optional : bool
-; plugin_name : string
+  optional : bool [@default False;]
+; plugin_name : string [@default "unique";]
 ; uniqified_module_name : uident
 ; normal_module_name : uident
 ; type_decls : list (string * MLast.type_decl) [@computed type_decls;]
