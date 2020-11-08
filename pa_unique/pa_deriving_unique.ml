@@ -31,7 +31,7 @@ value builtin_types =
 
 open Pa_ppx_params.Runtime ;
 
-module HC = struct
+module UC = struct
 
 type pertype_customization_t = {
   unique_constructor : option lident
@@ -209,25 +209,25 @@ value normal_type_decl ctxt rc td =
 
 value uniqified_type_decl ctxt rc td =
   let name = td.tdNam |> uv |> snd |> uv in
-  let skip_unique = uv td.tdPrm <> [] || List.mem name rc.HC.skip_types in
+  let skip_unique = uv td.tdPrm <> [] || List.mem name rc.UC.skip_types in
   let preserve_manifest = False in
   make_twolevel_type_decl ctxt rc ~{preserve_manifest=preserve_manifest} ~{skip_unique=skip_unique} td
 ;
 
 value str_item_gen_unique name arg = fun [
   <:str_item:< type $_flag:_$ $list:tdl$ >> ->
-    let rc = HC.build_context loc arg tdl in
+    let rc = UC.build_context loc arg tdl in
     let new_tdl =
       tdl
       |> List.map (uniqified_type_decl arg rc)
       |> List.concat
-      |> List.map HC.strip_unique_attributes in
+      |> List.map UC.strip_unique_attributes in
     let normal_tdl =
       tdl
       |> List.map (normal_type_decl arg rc)
       |> List.concat
-      |> List.map HC.strip_unique_attributes in
-    let unique_constructors = List.map (HC.generate_unique_constructor arg rc) rc.HC.type_decls in
+      |> List.map UC.strip_unique_attributes in
+    let unique_constructors = List.map (UC.generate_unique_constructor arg rc) rc.UC.type_decls in
       <:str_item< declare
                   module $uid:rc.normal_module_name$ = struct
                   type $list:normal_tdl$ ;
