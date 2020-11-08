@@ -155,7 +155,7 @@ value separate_bindings l =
   (List.rev ml, List.rev vl)
 ;
 
-value generate_unique_constructor ctxt rc (name, td) =
+value generate_unique_constructor rc (name, td) =
   let loc = loc_of_type_decl td in
   if uv td.tdPrm <> [] || List.mem name rc.skip_types then <:str_item< declare end >> else
   let consnames = unique_constructor_names rc name in
@@ -170,7 +170,7 @@ value generate_unique_constructor ctxt rc (name, td) =
 end
 ;
 
-value make_twolevel_type_decl ctxt rc ~{preserve_manifest} ~{skip_unique} td =
+value make_twolevel_type_decl rc ~{preserve_manifest} ~{skip_unique} td =
   let loc = loc_of_type_decl td in
   let name = td.tdNam |> uv |> snd |> uv in
   let data_name = name^"_node" in
@@ -201,34 +201,32 @@ value make_twolevel_type_decl ctxt rc ~{preserve_manifest} ~{skip_unique} td =
   ]
 ;
 
-value normal_type_decl ctxt rc td =
+value normal_type_decl rc td =
   let skip_unique = True in
   let preserve_manifest = True in
-  make_twolevel_type_decl ctxt rc ~{preserve_manifest=preserve_manifest} ~{skip_unique=skip_unique} td
+  make_twolevel_type_decl rc ~{preserve_manifest=preserve_manifest} ~{skip_unique=skip_unique} td
 ;
 
-value uniqified_type_decl ctxt rc td =
+value uniqified_type_decl rc td =
   let name = td.tdNam |> uv |> snd |> uv in
   let skip_unique = uv td.tdPrm <> [] || List.mem name rc.UC.skip_types in
   let preserve_manifest = False in
-  make_twolevel_type_decl ctxt rc ~{preserve_manifest=preserve_manifest} ~{skip_unique=skip_unique} td
+  make_twolevel_type_decl rc ~{preserve_manifest=preserve_manifest} ~{skip_unique=skip_unique} td
 ;
 
-value str_item_gen_unique name arg = fun [
-  <:str_item:< type $_flag:_$ $list:tdl$ >> ->
-    let rc = UC.build_context loc arg tdl in
-    let new_tdl =
-      tdl
-      |> List.map (uniqified_type_decl arg rc)
-      |> List.concat
-      |> List.map UC.strip_unique_attributes in
-    let normal_tdl =
-      tdl
-      |> List.map (normal_type_decl arg rc)
-      |> List.concat
-      |> List.map UC.strip_unique_attributes in
-    let unique_constructors = List.map (UC.generate_unique_constructor arg rc) rc.UC.type_decls in
-      <:str_item< declare
+value str_item_generate_unique loc rc tdl =
+  let new_tdl =
+    tdl
+    |> List.map (uniqified_type_decl rc)
+    |> List.concat
+    |> List.map UC.strip_unique_attributes in
+  let normal_tdl =
+    tdl
+    |> List.map (normal_type_decl rc)
+    |> List.concat
+    |> List.map UC.strip_unique_attributes in
+  let unique_constructors = List.map (UC.generate_unique_constructor rc) rc.UC.type_decls in
+  <:str_item< declare
                   module $uid:rc.normal_module_name$ = struct
                   type $list:normal_tdl$ ;
                   end ;
@@ -238,6 +236,12 @@ value str_item_gen_unique name arg = fun [
                   declare $list:unique_constructors$ end ;
                   end ;
                 end>>
+;
+
+value str_item_gen_unique name arg = fun [
+  <:str_item:< type $_flag:_$ $list:tdl$ >> ->
+    let rc = UC.build_context loc arg tdl in
+    str_item_generate_unique loc rc tdl
 | _ -> assert False ]
 ;
 
