@@ -226,7 +226,7 @@ value str_item_generate_unique loc rc tdl =
     |> List.concat
     |> List.map UC.strip_unique_attributes in
   let unique_constructors = List.map (UC.generate_unique_constructor rc) rc.UC.type_decls in
-  <:str_item< declare
+  let uu_st = <:str_item< declare
                   module $uid:rc.normal_module_name$ = struct
                   type $list:normal_tdl$ ;
                   end ;
@@ -235,13 +235,15 @@ value str_item_generate_unique loc rc tdl =
                   type $list:new_tdl$ ;
                   declare $list:unique_constructors$ end ;
                   end ;
-                end>>
+                end >> in
+  (uu_st, normal_tdl, new_tdl)
 ;
 
 value str_item_gen_unique name arg = fun [
   <:str_item:< type $_flag:_$ $list:tdl$ >> ->
     let rc = UC.build_context loc arg tdl in
-    str_item_generate_unique loc rc tdl
+    let (uu_st, _, _) = str_item_generate_unique loc rc tdl in
+    uu_st
 | _ -> assert False ]
 ;
 
