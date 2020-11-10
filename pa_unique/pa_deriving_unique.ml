@@ -42,7 +42,7 @@ type t = {
   optional : bool [@default False;]
 ; plugin_name : string [@default "unique";]
 ; uniqified_module_name : uident
-; normal_module_name : uident
+; normal_module_name : option uident
 ; type_decls : list (string * MLast.type_decl) [@computed type_decls;]
 ; skip_types : (list lident) [@default [];]
 ; pertype_customization : (alist lident pertype_customization_t) [@default [];]
@@ -170,7 +170,7 @@ value generate_unique_constructor rc (name, td) =
 end
 ;
 
-value make_twolevel_type_decl rc ~{preserve_manifest} ~{skip_unique} td =
+value make_twolevel_type_decl rc ~{with_manifest} ~{skip_unique} td =
   let loc = loc_of_type_decl td in
   let name = td.tdNam |> uv |> snd |> uv in
   let data_name = name^"_node" in
@@ -193,7 +193,12 @@ value make_twolevel_type_decl rc ~{preserve_manifest} ~{skip_unique} td =
         let n = <:vala< data_name >> in
         <:vala< (loc, n) >>
       ; tdDef = match td.tdDef with [
-          <:ctyp< $_$ == $t$ >> when not preserve_manifest -> t
+          <:ctyp< $_$ == $t$ >> when not with_manifest -> t
+        | <:ctyp< $_$ == $t$ >> when with_manifest -> td.tdDef
+        | t when is_generative_type t && with_manifest ->
+          Ploc.raise (loc_of_type_decl td)
+            (Failure Fmt.(str "cannot generate requested \"normal\" type declaration b/c original type is not manifest: %s"
+                            name))
         | t -> t
         ]
     }
@@ -203,15 +208,15 @@ value make_twolevel_type_decl rc ~{preserve_manifest} ~{skip_unique} td =
 
 value normal_type_decl rc td =
   let skip_unique = True in
-  let preserve_manifest = True in
-  make_twolevel_type_decl rc ~{preserve_manifest=preserve_manifest} ~{skip_unique=skip_unique} td
+  let with_manifest = True in
+  make_twolevel_type_decl rc ~{with_manifest=with_manifest} ~{skip_unique=skip_unique} td
 ;
 
 value uniqified_type_decl rc td =
   let name = td.tdNam |> uv |> snd |> uv in
   let skip_unique = uv td.tdPrm <> [] || List.mem name rc.UC.skip_types in
-  let preserve_manifest = False in
-  make_twolevel_type_decl rc ~{preserve_manifest=preserve_manifest} ~{skip_unique=skip_unique} td
+  let with_manifest = False in
+  make_twolevel_type_decl rc ~{with_manifest=with_manifest} ~{skip_unique=skip_unique} td
 ;
 
 value str_item_generate_unique loc rc tdl =
@@ -220,16 +225,23 @@ value str_item_generate_unique loc rc tdl =
     |> List.map (uniqified_type_decl rc)
     |> List.concat
     |> List.map UC.strip_unique_attributes in
-  let normal_tdl =
-    tdl
-    |> List.map (normal_type_decl rc)
-    |> List.concat
-    |> List.map UC.strip_unique_attributes in
+  let (normal_tdl, normal_module) = match rc.normal_module_name with [
+    None -> (tdl, <:str_item< declare end >>)
+  | Some normname ->
+    let normal_tdl =
+      tdl
+      |> List.map (normal_type_decl rc)
+      |> List.concat
+      |> List.map UC.strip_unique_attributes in
+    (normal_tdl,
+     <:str_item< module $uid:normname$ = struct
+                type $list:normal_tdl$ ;
+                end
+                >>)
+  ] in
   let unique_constructors = List.map (UC.generate_unique_constructor rc) rc.UC.type_decls in
   let uu_st = <:str_item< declare
-                  module $uid:rc.normal_module_name$ = struct
-                  type $list:normal_tdl$ ;
-                  end ;
+                  $stri:normal_module$ ;
                   module $uid:rc.uniqified_module_name$ = struct
                   open Pa_ppx_unique_runtime.Unique ;
                   type $list:new_tdl$ ;
@@ -253,11 +265,7 @@ Pa_deriving.(Registry.add PI.{
 ; options = ["optional"
             ; "uniqified_module_name"; "normal_module_name"
             ; "skip_types"; "pertype_customization"]
-; default_options = let loc = Ploc.dummy in [
-    ("optional", <:expr< False >>)
-  ; ("skip_types", <:expr< [] >>)
-  ; ("pertype_customization", <:expr< () >>)
-  ]
+; default_options = []
 ; alg_attributes = []
 ; expr_extensions = []
 ; ctyp_extensions = []

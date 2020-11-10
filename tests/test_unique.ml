@@ -11,7 +11,9 @@ and term =
   | App of term * term
   | Foo of term_option
 [@@deriving unique { uniqified_module_name = LAMH
+(*
                    ; normal_module_name = LAM
+*)
                      ; skip_types = [
                          id
                        ]
@@ -26,7 +28,9 @@ type term =
   | App of term * term
   | Foo of term Option.t
 [@@deriving unique { uniqified_module_name = LAM2H
+(*
                      ; normal_module_name = LAM2
+*)
                      ; pertype_customization = {
                          term = {
                            unique_constructor = term
@@ -39,9 +43,13 @@ end
 
 type variable = int (* 1..max_var *) ;;
 
+module BDD = struct
 type bdd = Zero | One | Node of variable * bdd (*low*) * bdd (*high*)
-[@@deriving unique { uniqified_module_name = BDDH
-                     ; normal_module_name = BDD
+end
+
+type bdd = BDD.bdd = Zero | One | Node of variable * bdd (*low*) * bdd (*high*)
+[@@deriving unique { uniqified_module_name = UN
+                     ; normal_module_name = OK
                      }]
 ;;
 
