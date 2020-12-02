@@ -24,7 +24,7 @@ description = "pa_ppx_unique deriver"
     archive(syntax,preprocessor,native) = "pa_deriving_unique.cmx"
 
   package "link" (
-  requires(byte) = "camlp5,pa_ppx.deriving.link,pa_ppx.deriving_plugins.show.link,pa_ppx.params_runtime"
+  requires = "camlp5,pa_ppx.deriving.link,pa_ppx.deriving_plugins.show.link,pa_ppx.params_runtime"
   archive(byte) = "pa_deriving_unique.cmo"
   archive(native) = "pa_deriving_unique.cmx"
   )
