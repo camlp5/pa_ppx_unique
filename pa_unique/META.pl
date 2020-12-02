@@ -16,15 +16,15 @@ description = "pa_ppx_unique deriver"
     archive(native) = "pa_ppx_unique_runtime.cmx"
   )
 
-  requires(toploop) = "camlp5,pa_ppx.deriving_plugins.show,pa_ppx.params_runtime"
+  requires(toploop) = "camlp5,pa_ppx.deriving,pa_ppx.deriving_plugins.show,pa_ppx.params_runtime"
   archive(toploop) = "pa_deriving_unique.cmo"
 
-    requires(syntax,preprocessor) = "camlp5,pa_ppx.deriving_plugins.show,pa_ppx.params_runtime"
+    requires(syntax,preprocessor) = "camlp5,pa_ppx.deriving,pa_ppx.deriving_plugins.show,pa_ppx.params_runtime"
     archive(syntax,preprocessor,-native) = "pa_deriving_unique.cmo"
     archive(syntax,preprocessor,native) = "pa_deriving_unique.cmx"
 
   package "link" (
-  requires(byte) = "camlp5,pa_ppx.deriving_plugins.show.link,pa_ppx.params_runtime"
+  requires(byte) = "camlp5,pa_ppx.deriving.link,pa_ppx.deriving_plugins.show.link,pa_ppx.params_runtime"
   archive(byte) = "pa_deriving_unique.cmo"
   archive(native) = "pa_deriving_unique.cmx"
   )
