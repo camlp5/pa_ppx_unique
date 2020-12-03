@@ -1,5 +1,3 @@
-test_unique.cmo: ../local-install/lib/pa_ppx_unique/META ../local-install/lib/pa_ppx_unique/META
-test_unique.cmo.ppo.cmo :
-test_unique.cmo.ppo.cmx :
+test_unique.cmo test_unique.cmi test_unique.cmx: ../local-install/lib/pa_ppx_unique/META ../local-install/lib/pa_ppx_unique/META
 test_unique.cmo :
 test_unique.cmx :
