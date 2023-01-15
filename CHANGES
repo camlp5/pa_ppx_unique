@@ -2,7 +2,7 @@
 pa_ppx_unique Version 0.09
 -------------------
 
-* [25 Dec 2022] update pa_ppx_unique to support ocaml 5.0.0
+* [14 Jan 2023] update pa_ppx_unique to support ocaml 5.0.0
 
   Minor fixups to Makefiles
 
