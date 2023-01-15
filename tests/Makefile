@@ -32,11 +32,12 @@ CMX := $(ML:.ml=.cmx)
 CMT := $(ML:.ml=.cmt)
 CMTI := $(MLI:.mli=.cmti)
 
-all: $(TESTS)
+all: $(TESTS) $(TESTS:.byte=.opt)
 
 test: $(TESTS:.byte=)
 
 % : %.opt
+	mkdir -p _build && ./$<
 
 test_unique.byte: test_unique.cmo
 	$(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) -package $(PACKAGES) \
