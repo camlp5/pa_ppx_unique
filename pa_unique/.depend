@@ -3,3 +3,5 @@ pa_deriving_unique.cmo :
 pa_deriving_unique.cmx :
 pa_ppx_unique_runtime.cmo :
 pa_ppx_unique_runtime.cmx :
+mk_meta.cmo :
+mk_meta.cmx :

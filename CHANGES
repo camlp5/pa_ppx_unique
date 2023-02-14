@@ -1,4 +1,9 @@
 
+pa_ppx_unique Version 0.10
+-------------------
+
+* [14 Feb 2023] update pa_ppx_unique to use camlp5-buildscripts instead of Perl scripts
+
 pa_ppx_unique Version 0.09
 -------------------
 

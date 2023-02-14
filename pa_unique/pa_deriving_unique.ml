@@ -1,4 +1,4 @@
-(* camlp5r *)
+(** -syntax camlp5r *)
 (* pa_deriving_migrate.ml,v *)
 (* Copyright (c) INRIA 2007-2017 *)
 
