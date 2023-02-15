@@ -1,0 +1,15 @@
+include $(TOP)/config/Makefile.shared
+
+META: mk_meta.ML
+	cppo -I $(TOP) mk_meta.ML > mk_meta.ml
+	$(LAUNCH) $(OCAMLFIND) ocamlc -linkpkg -linkall -package $(PACKAGES) mk_meta.ml -o mk_meta
+	./mk_meta > META
+
+EXTERNAL=$(shell $(LAUNCH) $(OCAMLFIND) query -predicates byte -format '%m' $(ALLPACKAGES) | grep local-install)
+
+depend::
+	echo "$(CMO) $(CMI) $(CMX): $(EXTERNAL)" > .depend.NEW
+	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamldep -package $(ALLPACKAGES) -- $(ALLSRC) >> .depend.NEW
+	mv .depend.NEW .depend
+
+-include .depend

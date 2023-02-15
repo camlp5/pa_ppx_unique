@@ -3,10 +3,9 @@
 
 WD=$(shell pwd)
 TOP=..
-include $(TOP)/config/Makefile
+include $(TOP)/config/Makefile.sub
 
 DESTDIR=
-RM=rm
 
 PACKAGES := $(PACKAGES),oUnit,fmt,pcre,rresult,compiler-libs.common,sexplib0,uint,pa_ppx.utils,pa_ppx.import
 PACKAGES := $(PACKAGES),pa_ppx_unique,pa_ppx_unique.runtime,pa_ppx_migrate
@@ -20,12 +19,8 @@ TESTS= \
 ML=\
 	test_unique.ml
 
-
-CMO := $(ML:.ml=.cmo)
-CMI := $(ML:.ml=.cmi)
-CMX := $(ML:.ml=.cmx)
-CMT := $(ML:.ml=.cmt)
-CMTI := $(MLI:.mli=.cmti)
+ALLSRC=$(ML)
+ALLPACKAGES=$(PACKAGES)
 
 all: $(TESTS) $(TESTS:.byte=.opt)
 
@@ -44,13 +39,3 @@ test_unique.opt: test_unique.cmx
 
 clean::
 	rm -f  *.ppo.*
-
-EXTERNAL := $(shell $(LAUNCH) $(OCAMLFIND) query -predicates byte -format '%m' $(PACKAGES) | grep local-install)
-
-depend::
-	echo "$(CMO) $(CMI) $(CMX): $(EXTERNAL)" > .depend.NEW
-	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamldep $(OCAMLCFLAGS) -package $(PACKAGES) -- *.ml \
-	>> .depend.NEW
-	mv .depend.NEW .depend
-
--include .depend

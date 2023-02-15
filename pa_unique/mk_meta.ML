@@ -1,4 +1,4 @@
-#include "../version.inc"
+#include "version.inc"
 
 let top = try Sys.getenv "TOP" with Not_found -> "" ;;
 let destdir = ref (top ^ "/local-install") ;;

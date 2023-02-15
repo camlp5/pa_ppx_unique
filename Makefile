@@ -2,11 +2,10 @@
 # Copyright (c) INRIA 2007-2017
 
 TOP=.
-include $(TOP)/config/Makefile
+include $(TOP)/config/Makefile.top
 
 WD=$(shell pwd)
 DESTDIR=
-RM=rm
 
 SYSDIRS= pa_unique
 
