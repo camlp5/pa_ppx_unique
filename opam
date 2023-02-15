@@ -15,7 +15,6 @@ doc: "https://github.com/camlp5/pa_ppx_unique/doc"
 
 depends: [
   "ocaml"       { >= "4.10.0" & < "5.01.0" }
-  "conf-perl"
   "cppo" { >= "1.6.9" }
   "camlp5-buildscripts" { >= "0.01" }
   "camlp5"      { >= "8.00" }
@@ -25,6 +24,7 @@ depends: [
   "pcre" { >= "7.4.3" }
   "ounit" {with-test}
   "bos" { >= "0.2.0" }
+  "fmt"
 ]
 build: [
   [make "sys"]
