@@ -17,10 +17,8 @@ TOOLSML = mk_meta.ml
 ALLSRC=$(ML) $(TOOLSML)
 ALLPACKAGES=$(PACKAGES)
 
-all: all-files
+all: $(CMO) $(CMX)
 	$(MAKE) local-install
-
-all-files: $(CMO) $(CMX)
 
 doc: $(CMT) $(CMTI)
 
