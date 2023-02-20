@@ -22,8 +22,18 @@ CMI = $(ML:.ml=.cmi)
 CMX = $(ML:.ml=.cmx)
 CMT = $(ML:.ml=.cmt)
 CMTI = $(MLI:.mli=.cmti)
+DEFAULT_INSTALL_FILES = $(MLI) $(wildcard *.cmt*)
 
 top: all
+
+ARCHIVE_TARGET_INSTALL_FILES= $(TARGET) $(TARGET:.cma=.cmxa) $(TARGET:.cma=.a) $(TARGET:.cma=.cmi) $(TARGET:.cma=.cmx)
+FILES_TARGET_INSTALL_FILES= $(CMO) $(CMX) $(CMI) $(CMO:.cmo=.o)
+default_install:: META $(TARGET_INSTALL_FILES) $(DEFAULT_INSTALL_FILES)
+	mkdir -p $(DESTDIR)/lib
+	$(NOT_OCAMLFIND) reinstall-if-diff $(TARGET_PACKAGE) -destdir $(DESTDIR)/lib META $(DEFAULT_INSTALL_FILES) $(TARGET_INSTALL_FILES)
+
+default_uninstall::
+	$(NOT_OCAMLFIND) remove $(TARGET_PACKAGE) -destdir $(DESTDIR)/lib
 
 .mli.cmi:
 	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES) -c $<
@@ -38,12 +48,12 @@ top: all
 
 .ml.cmt:
 	@mkdir -p .cmt
-	$(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES),pa_ppx.dock -bin-annot -c $< -o .cmt/$*.cmo
+	$(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES),pa_ppx_dock -bin-annot -c $< -o .cmt/$*.cmo
 	cp .cmt/$*.cmt $*.cmt
 
 .mli.cmti:
 	@mkdir -p .cmt
-	$(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES),pa_ppx.dock -bin-annot -c $< -o .cmt/$*.cmi
+	$(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES),pa_ppx_dock -bin-annot -c $< -o .cmt/$*.cmi
 	cp .cmt/$*.cmti $*.cmti
 
 .SUFFIXES: .cmo .cmi .ml .mli .cmx .cma .cmxa .cmt .cmti
