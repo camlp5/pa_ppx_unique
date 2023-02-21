@@ -56,6 +56,16 @@ default_uninstall::
 	$(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES),pa_ppx_dock -bin-annot -c $< -o .cmt/$*.cmi
 	cp .cmt/$*.cmti $*.cmti
 
+.PRECIOUS: %.asciidoc.corrected
+
+%.asciidoc.corrected: %.asciidoc
+	$(LAUNCH) ocaml-mdx test -o $@ $<
+
+%.asciidoc.TEST: %.asciidoc.corrected %.asciidoc
+	perl -p -i -e 's,.*: added to search path,: added to search path,' $<
+	perl -p -i -e 's,.*: loaded,: loaded,' $<
+	diff -Bwiu $^
+
 .SUFFIXES: .cmo .cmi .ml .mli .cmx .cma .cmxa .cmt .cmti
 
 clean::
