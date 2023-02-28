@@ -1,4 +1,4 @@
-(** -syntax camlp5r *)
+(**pp -syntax camlp5r *)
 (* pa_ppx_unique_runtime.ml,v *)
 
 module Unique = struct

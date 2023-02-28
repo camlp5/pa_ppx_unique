@@ -1,4 +1,4 @@
-(** -syntax camlp5o $(IMPORT_OCAMLCFLAGS) *)
+(**pp -syntax camlp5o $(IMPORT_OCAMLCFLAGS) *)
 (* test_unique.ml *)
 
 type 'a id = 'a
