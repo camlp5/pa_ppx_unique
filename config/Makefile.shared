@@ -3,6 +3,7 @@
 
 RM=rm
 
+DEBUG=-g
 NOT_OCAMLFIND=not-ocamlfind
 LAUNCH=env TOP=$(TOP) ocamlfind camlp5-buildscripts/LAUNCH --
 OCAMLFIND=ocamlfind
@@ -14,7 +15,6 @@ MKCAMLP5=mkcamlp5 -verbose -I +dynlink
 MKCAMLP5OPT=mkcamlp5.opt -verbose -I +dynlink
 INCLUDES=
 OCAMLCFLAGS= $(INCLUDES)
-PACKAGES=fmt,unix,compiler-libs.common,camlp5,camlp5.extfun,camlp5.parser_quotations
 PRPACKAGE = camlp5.pr_o
 
 CMO = $(ML:.ml=.cmo)
@@ -29,6 +29,7 @@ top: all
 ARCHIVE_TARGET_INSTALL_FILES= $(TARGET) $(TARGET:.cma=.cmxa) $(TARGET:.cma=.a) $(TARGET:.cma=.cmi) $(TARGET:.cma=.cmx)
 FILES_TARGET_INSTALL_FILES= $(CMO) $(CMX) $(CMI) $(CMO:.cmo=.o)
 default_install:: META $(TARGET_INSTALL_FILES) $(DEFAULT_INSTALL_FILES)
+	touch META
 	mkdir -p $(DESTDIR)/lib
 	$(NOT_OCAMLFIND) reinstall-if-diff $(TARGET_PACKAGE) -destdir $(DESTDIR)/lib META $(DEFAULT_INSTALL_FILES) $(TARGET_INSTALL_FILES)
 
@@ -39,8 +40,10 @@ default_uninstall::
 	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES) -c $<
 
 .ml.cmo:
-#	$(LAUNCH) $(YAWRAP) $(NOT_OCAMLFIND) preprocess $(OCAMLCFLAGS) -package $(PACKAGES),$(PRPACKAGE) $< > $*_ppo.ml
-#	$(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) $(OCAMLCFLAGS) -package $(PACKAGES) -c $*_ppo.ml
+	$(LAUNCH) $(YAWRAP) $(NOT_OCAMLFIND) preprocess $(OCAMLCFLAGS) -package $(PACKAGES),$(PRPACKAGE) $< > $*_ppo.ml
+	perl -p -i -e 's,-syntax camlp5r,-syntax camlp5o,' $*_ppo.ml
+	perl -p -i -e 's, -package pa_ppx.deriving_plugins.params , ,' $*_ppo.ml
+	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) $(OCAMLCFLAGS) -package $(PACKAGES) -c $*_ppo.ml
 	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES) -c $<
 
 .ml.cmx:
@@ -66,7 +69,10 @@ default_uninstall::
 	perl -p -i -e 's,.*: loaded,: loaded,' $<
 	diff -Bwiu $^
 
-.SUFFIXES: .cmo .cmi .ml .mli .cmx .cma .cmxa .cmt .cmti
+toplevel::
+	$(LAUNCH) ocaml -nopromptcont
+
+.SUFFIXES: .cmo .cmi .ml .mll .mly .mli .cmx .cma .cmxa .cmt .cmti
 
 clean::
 	$(RM) -rf *.cm* *.o *.a *.byte *.opt *.log *.cache *.ppo *ppo.ml _build/* .cmt *.odoc META mk_meta.ml mk_meta

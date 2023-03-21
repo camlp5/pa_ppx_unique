@@ -1,1 +1,2 @@
+include $(TOP)/config/Makefile.config
 include $(TOP)/config/Makefile.shared
