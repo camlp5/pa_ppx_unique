@@ -40,10 +40,10 @@ default_uninstall::
 	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES) -c $<
 
 .ml.cmo:
-	$(LAUNCH) $(YAWRAP) $(NOT_OCAMLFIND) preprocess $(OCAMLCFLAGS) -package $(PACKAGES),$(PRPACKAGE) $< > $*_ppo.ml
-	perl -p -i -e 's,-syntax camlp5r,-syntax camlp5o,' $*_ppo.ml
-	perl -p -i -e 's, -package pa_ppx.deriving_plugins.params , ,' $*_ppo.ml
-	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) $(OCAMLCFLAGS) -package $(PACKAGES) -c $*_ppo.ml
+#	$(LAUNCH) $(YAWRAP) $(NOT_OCAMLFIND) preprocess $(OCAMLCFLAGS) -package $(PACKAGES),$(PRPACKAGE) $< > $*_ppo.ml
+#	perl -p -i -e 's,-syntax camlp5r,-syntax camlp5o,' $*_ppo.ml
+#	perl -p -i -e 's, -package pa_ppx.deriving_plugins.params , ,' $*_ppo.ml
+#	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) $(OCAMLCFLAGS) -package $(PACKAGES) -c $*_ppo.ml
 	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES) -c $<
 
 .ml.cmx:
