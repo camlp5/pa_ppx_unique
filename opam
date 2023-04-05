@@ -20,7 +20,7 @@ depends: [
   "camlp5"      { >= "8.01.00" }
   "pa_ppx"      { >= "0.12" }
   "pa_ppx_migrate"      { with-test & >= "0.10" }
-  "not-ocamlfind" { >= "0.01" }
+  "not-ocamlfind" { >= "0.10" }
   "pcre" { >= "7.4.3" }
   "ounit" {with-test}
   "bos" { >= "0.2.0" }
