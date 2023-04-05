@@ -2,7 +2,7 @@ A PPX Rewriter for Uniqifying an AST
 
 ### Version
 
-This is ``pa_ppx_unique`` (alpha) version 0.07.
+This is ``pa_ppx_unique`` (alpha) version 0.10.
 
 # Overview
 
