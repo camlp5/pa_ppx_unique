@@ -2,6 +2,8 @@
 pa_ppx_unique Version 0.10
 -------------------
 
+* [05 Apr 2023] reorg Makefiles, remove all use of Perl
+
 * [14 Feb 2023] update pa_ppx_unique to use camlp5-buildscripts instead of Perl scripts
 
 pa_ppx_unique Version 0.09
