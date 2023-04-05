@@ -1,3 +1,4 @@
+version: "0.10"
 synopsis: "A PPX Rewriter for Uniqifying ASTs"
 description:
 """
