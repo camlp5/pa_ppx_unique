@@ -1,6 +1,9 @@
 # Makefile,v
 # Copyright (c) INRIA 2007-2017
 
+ocamlVERSION=$(shell ocamlc --version)
+camlp5VERSION=$(shell camlp5 -version)
+
 RM=rm
 
 DEBUG=-g
@@ -26,7 +29,8 @@ DEFAULT_INSTALL_FILES = $(MLI) $(wildcard *.cmt*)
 
 top: all
 
-ARCHIVE_TARGET_INSTALL_FILES= $(TARGET) $(TARGET:.cma=.cmxa) $(TARGET:.cma=.a) $(TARGET:.cma=.cmi) $(TARGET:.cma=.cmx)
+ARCHIVE_TARGET_INSTALL_FILES= $(TARGET) $(TARGET:.cma=.cmxa) $(TARGET:.cma=.a)
+PACKED_ARCHIVE_TARGET_INSTALL_FILES= $(ARCHIVE_TARGET_INSTALL_FILES) $(TARGET:.cma=.cmi) $(TARGET:.cma=.cmx)
 FILES_TARGET_INSTALL_FILES= $(CMO) $(CMX) $(CMI) $(CMO:.cmo=.o)
 default_install:: META $(TARGET_INSTALL_FILES) $(DEFAULT_INSTALL_FILES)
 	touch META
@@ -36,7 +40,26 @@ default_install:: META $(TARGET_INSTALL_FILES) $(DEFAULT_INSTALL_FILES)
 default_uninstall::
 	$(NOT_OCAMLFIND) remove $(TARGET_PACKAGE) -destdir $(DESTDIR)/lib
 
+ifdef DEBUG_PREPROCESS
 .mli.cmi:
+	$(LAUNCH) $(YAWRAP) $(NOT_OCAMLFIND) preprocess $(OCAMLCFLAGS) -package $(PACKAGES),$(PRPACKAGE) $< > $*_ppo.mli
+	perl -p -i -e 's,-syntax camlp5r,-syntax camlp5o,' $*_ppo.mli
+	perl -p -i -e 's, -package pa_ppx.deriving_plugins.params , ,' $*_ppo.mli
+	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) $(OCAMLCFLAGS) -package $(PACKAGES) -c $*_ppo.mli
+	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES) -c $<
+
+.ml.cmo:
+	$(LAUNCH) $(YAWRAP) $(NOT_OCAMLFIND) preprocess $(OCAMLCFLAGS) -package $(PACKAGES),$(PRPACKAGE) $< > $*_ppo.ml
+	perl -p -i -e 's,-syntax camlp5r,-syntax camlp5o,' $*_ppo.ml
+	perl -p -i -e 's, -package pa_ppx.deriving_plugins.params , ,' $*_ppo.ml
+	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) $(OCAMLCFLAGS) -package $(PACKAGES) -c $*_ppo.ml
+	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES) -c $<
+else
+.mli.cmi:
+#	$(LAUNCH) $(YAWRAP) $(NOT_OCAMLFIND) preprocess $(OCAMLCFLAGS) -package $(PACKAGES),$(PRPACKAGE) $< > $*_ppo.mli
+#	perl -p -i -e 's,-syntax camlp5r,-syntax camlp5o,' $*_ppo.mli
+#	perl -p -i -e 's, -package pa_ppx.deriving_plugins.params , ,' $*_ppo.mli
+#	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) $(OCAMLCFLAGS) -package $(PACKAGES) -c $*_ppo.mli
 	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES) -c $<
 
 .ml.cmo:
@@ -45,6 +68,7 @@ default_uninstall::
 #	perl -p -i -e 's, -package pa_ppx.deriving_plugins.params , ,' $*_ppo.ml
 #	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) $(OCAMLCFLAGS) -package $(PACKAGES) -c $*_ppo.ml
 	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES) -c $<
+endif
 
 .ml.cmx:
 	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlopt $(DEBUG) $(OCAMLCFLAGS) -package $(PACKAGES) -c $<
@@ -75,6 +99,6 @@ toplevel::
 .SUFFIXES: .cmo .cmi .ml .mll .mly .mli .cmx .cma .cmxa .cmt .cmti
 
 clean::
-	$(RM) -rf *.cm* *.o *.a *.byte *.opt *.log *.cache *.ppo *ppo.ml _build/* .cmt *.odoc META mk_meta.ml mk_meta
+	$(RM) -rf *.cm* *.o *.a *.byte *.opt *.log *.cache *.ppo *ppo.ml *ppo.mli _build/* .cmt *.odoc META mk_meta.ml mk_meta *.NEW
 
 realclean:: clean
