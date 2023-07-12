@@ -1,4 +1,4 @@
-version: "0.10"
+version: "0.11"
 synopsis: "A PPX Rewriter for Uniqifying ASTs"
 description:
 """
@@ -15,7 +15,7 @@ dev-repo: "git+https://github.com/camlp5/pa_ppx_unique.git"
 doc: "https://github.com/camlp5/pa_ppx_unique/doc"
 
 depends: [
-  "ocaml"       { >= "4.10.0" & < "5.01.0" }
+  "ocaml"       { >= "4.10.0" & < "5.02.0" }
   "cppo" { >= "1.6.9" }
   "camlp5-buildscripts" { >= "0.02" }
   "camlp5"      { >= "8.01.00" }
