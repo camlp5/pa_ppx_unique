@@ -99,6 +99,6 @@ toplevel::
 .SUFFIXES: .cmo .cmi .ml .mll .mly .mli .cmx .cma .cmxa .cmt .cmti
 
 clean::
-	$(RM) -rf *.cm* *.o *.a *.byte *.opt *.log *.cache *.ppo *ppo.ml *ppo.mli _build/* .cmt *.odoc META mk_meta.ml mk_meta *.NEW
+	$(RM) -rf *.cm* *.o *.a *.byte *.opt *.log *.cache *.ppo *ppo.ml *ppo.mli _build/* .cmt *.odoc META mk_meta.ml mk_meta *.NEW *.corrected
 
 realclean:: clean
