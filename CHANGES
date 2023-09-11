@@ -1,4 +1,9 @@
 
+pa_ppx_unique Version 0.11
+-------------------
+
+* [11 Sep 2023] fix Makefiles
+
 pa_ppx_unique Version 0.10
 -------------------
 

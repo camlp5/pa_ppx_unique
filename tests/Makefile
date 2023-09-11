@@ -7,7 +7,7 @@ include $(TOP)/config/Makefile.sub
 
 DESTDIR=
 
-PACKAGES := $(PACKAGES),oUnit,fmt,pcre,rresult,compiler-libs.common,sexplib0,uint,pa_ppx.utils,pa_ppx.import
+PACKAGES := $(PACKAGES),oUnit,fmt,rresult,compiler-libs.common,sexplib0,uint,pa_ppx.utils,pa_ppx.import
 PACKAGES := $(PACKAGES),pa_ppx_unique,pa_ppx_unique.runtime,pa_ppx_migrate
 export IMPORT_OCAMLCFLAGS += -ppopt -pa_passthru-debug 
 export IMPORT_OCAMLCFLAGS += -ppopt -pa_import-package -ppopt camlp5
