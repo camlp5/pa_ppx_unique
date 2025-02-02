@@ -1,0 +1,10 @@
+
+ifdef OPAMROOT
+ifeq ($(shell opam var os),freebsd)
+DIFF=gdiff
+else
+DIFF=diff
+endif
+else
+DIFF=diff
+endif

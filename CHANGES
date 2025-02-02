@@ -1,4 +1,9 @@
 
+pa_ppx_unique Version 0.12
+-------------------
+
+* [01 Feb 2025] sync config/Makefiles across pa_ppx* packages
+
 pa_ppx_unique Version 0.11
 -------------------
 
