@@ -89,8 +89,8 @@ endif
 	$(LAUNCH) ocaml-mdx test -o $@ $<
 
 %.asciidoc.TEST: %.asciidoc.corrected %.asciidoc
-	perl -p -i -e 's,.*: added to search path,: added to search path,' $<
-	perl -p -i -e 's,.*: loaded,: loaded,' $<
+	perl -p -i -e 's,.*: added to search path.*,,' $<
+	perl -p -i -e 's,.*: loaded.*,,' $<
 	diff -Bwiu $^
 
 toplevel::
