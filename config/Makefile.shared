@@ -8,7 +8,7 @@ RM=rm
 
 DEBUG=-g
 NOT_OCAMLFIND=not-ocamlfind
-LAUNCH=env TOP=$(TOP) ocamlfind camlp5-buildscripts/LAUNCH --
+LAUNCH=env TOP=$(TOP) ocamlfind camlp5-buildscripts/LAUNCH $(DEBUG_LAUNCH) --
 OCAMLFIND=ocamlfind
 JOINMETA=ocamlfind camlp5-buildscripts/join_meta
 YAWRAP=ocamlfind camlp5-buildscripts/ya-wrap-ocamlfind
@@ -50,6 +50,7 @@ ifdef DEBUG_PREPROCESS
 
 .ml.cmo:
 	$(LAUNCH) $(YAWRAP) $(NOT_OCAMLFIND) preprocess $(OCAMLCFLAGS) -package $(PACKAGES),$(PRPACKAGE) $< > $*_ppo.ml
+	perl -p -i -e 's,^\s*#,#,' $*_ppo.ml
 	perl -p -i -e 's,-syntax camlp5r,-syntax camlp5o,' $*_ppo.ml
 	perl -p -i -e 's, -package pa_ppx.deriving_plugins.params , ,' $*_ppo.ml
 	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) $(OCAMLCFLAGS) -package $(PACKAGES) -c $*_ppo.ml
