@@ -28,7 +28,7 @@ depends: [
   "fmt"
 ]
 build: [
-  [make "sys"]
+  [make "DEBUG=-g" "sys"]
   [make "test"] {with-test}
 ]
 install: [make "install"]
