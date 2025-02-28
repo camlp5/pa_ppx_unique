@@ -1,6 +1,6 @@
 
 ifdef OPAMROOT
-ifeq ($(shell opam var os),freebsd)
+ifeq ($(shell opam var os --global --cli=2.1 --safe),freebsd)
 DIFF=gdiff
 BASH=/usr/local/bin/bash
 else
