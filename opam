@@ -1,4 +1,4 @@
-version: "0.12"
+version: "8.04.01"
 synopsis: "A PPX Rewriter for Uniqifying ASTs"
 description:
 """
@@ -19,9 +19,9 @@ depends: [
   "ocaml"       { >= "4.10.0" }
   "cppo" { >= "1.6.9" }
   "camlp5-buildscripts" { >= "0.02" }
-  "camlp5"      { >= "8.01.00" }
-  "pa_ppx"      { >= "0.12" }
-  "pa_ppx_migrate"      { with-test & >= "0.10" }
+  "camlp5"      { >= "8.04.01" }
+  "pa_ppx"      { >= "8.04.01" }
+  "pa_ppx_migrate"      { with-test & >= "8.04.01" }
   "not-ocamlfind" { >= "0.10" }
   "ounit" { >= "2.2.7" & with-test}
   "bos" { >= "0.2.0" }
