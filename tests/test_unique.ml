@@ -44,10 +44,10 @@ end
 type variable = int (* 1..max_var *) ;;
 
 module BDD = struct
-type bdd = Zero | One | Node of variable * bdd (*low*) * bdd (*high*)
+type bdd = Zero | One | Node of (variable * low:bdd (*low*) * high:bdd (*high*))
 end
 
-type bdd = BDD.bdd = Zero | One | Node of variable * bdd (*low*) * bdd (*high*)
+type bdd = BDD.bdd = Zero | One | Node of (variable * low:bdd (*low*) * high:bdd (*high*))
 [@@deriving unique { uniqified_module_name = UN
                      ; normal_module_name = OK
                      }]
