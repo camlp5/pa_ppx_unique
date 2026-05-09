@@ -111,30 +111,6 @@ value create_function_type loc typemaker rho name =
     <:ctyp< ! $list:List.map fst rho$ . $rhsty$ >>
 ;
 
-value ctyp_make_tuple loc l =
-  match l with [
-    [] -> Ploc.raise loc (Failure "ctyp_make_tuple: invalid empty-list arg")
-  | [t] -> t
-  | l -> <:ctyp< ( $list:l$ ) >>
-  ]
-;
-
-value expr_make_tuple loc l =
-  match l with [
-    [] -> Ploc.raise loc (Failure "expr_make_tuple: invalid empty-list arg")
-  | [t] -> t
-  | l -> <:expr< ( $list:l$ ) >>
-  ]
-;
-
-value patt_make_tuple loc l =
-  match l with [
-    [] -> Ploc.raise loc (Failure "patt_make_tuple: invalid empty-list arg")
-  | [t] -> t
-  | l -> <:patt< ( $list:l$ ) >>
-  ]
-;
-
 value to_expr loc (v, (_, _)) = <:expr< $lid:v$ >> ;
 value to_patt loc (v, (_, _)) = <:patt< $lid:v$ >> ;
 value to_typatt loc (v, (_, ty)) = <:patt< ( $lid:v$ : $ty$ ) >> ;
