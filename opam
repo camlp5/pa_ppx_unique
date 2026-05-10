@@ -16,7 +16,7 @@ dev-repo: "git+https://github.com/camlp5/pa_ppx_unique.git"
 doc: "https://github.com/camlp5/pa_ppx_unique/doc"
 
 depends: [
-  "ocaml"       { >= "4.10.0" }
+  "ocaml"       { >= "5.4.0" }
   "cppo" { >= "1.6.9" }
   "camlp5-buildscripts" { >= "0.02" }
   "camlp5"      { >= "8.04.01" }
