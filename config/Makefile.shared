@@ -97,6 +97,12 @@ endif
 toplevel::
 	$(LAUNCH) ocaml -nopromptcont
 
+%.ml: %.OCAMLVERSIONED.ml
+	cppo -V OCAML:$(ocamlVERSION) $< > $@.NEW && mv $@.NEW $@
+
+%.mli: %.OCAMLVERSIONED.mli
+	cppo -V OCAML:$(ocamlVERSION) $< > $@.NEW && mv $@.NEW $@
+
 .SUFFIXES: .cmo .cmi .ml .mll .mly .mli .cmx .cma .cmxa .cmt .cmti
 
 clean::

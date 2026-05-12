@@ -34,5 +34,7 @@ test_unique.opt: test_unique.cmx
 	$(LAUNCH) $(OCAMLFIND) ocamlopt $(DEBUG) $(WARNERR) -package $(PACKAGES) \
 	-linkpkg -syntax camlp5o $^ -o $@
 
+.SECONDARY: test_unique.ml
+
 clean::
-	rm -f  *.ppo.*
+	rm -f  *.ppo.* test_unique.ml
