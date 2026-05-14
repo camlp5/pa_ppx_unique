@@ -43,6 +43,8 @@ default_uninstall::
 ifdef DEBUG_PREPROCESS
 .mli.cmi:
 	$(LAUNCH) $(YAWRAP) $(NOT_OCAMLFIND) preprocess $(OCAMLCFLAGS) -package $(PACKAGES),$(PRPACKAGE) $< > $*_ppo.mli
+	perl -p -i -e 's,^\s*# ,# ,' $*_ppo.mli
+	perl -n -i -e 'print unless m,^#.*,' $*_ppo.mli
 	perl -p -i -e 's,-syntax camlp5r,-syntax camlp5o,' $*_ppo.mli
 	perl -p -i -e 's, -package pa_ppx.deriving_plugins.params , ,' $*_ppo.mli
 	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) $(OCAMLCFLAGS) -package $(PACKAGES) -c $*_ppo.mli
@@ -50,7 +52,8 @@ ifdef DEBUG_PREPROCESS
 
 .ml.cmo:
 	$(LAUNCH) $(YAWRAP) $(NOT_OCAMLFIND) preprocess $(OCAMLCFLAGS) -package $(PACKAGES),$(PRPACKAGE) $< > $*_ppo.ml
-	perl -p -i -e 's,^\s*#,#,' $*_ppo.ml
+	perl -p -i -e 's,^\s*# ,# ,' $*_ppo.ml
+	perl -n -i -e 'print unless m,^#.*,' $*_ppo.ml
 	perl -p -i -e 's,-syntax camlp5r,-syntax camlp5o,' $*_ppo.ml
 	perl -p -i -e 's, -package pa_ppx.deriving_plugins.params , ,' $*_ppo.ml
 	$(LAUNCH) $(YAWRAP) $(OCAMLFIND) ocamlc $(DEBUG) $(WARNERR) $(OCAMLCFLAGS) -package $(PACKAGES) -c $*_ppo.ml
@@ -90,8 +93,8 @@ endif
 	$(LAUNCH) ocaml-mdx test -o $@ $<
 
 %.asciidoc.TEST: %.asciidoc.corrected %.asciidoc
-	perl -p -i -e 's,.*: added to search path.*,,' $<
-	perl -p -i -e 's,.*: loaded.*,,' $<
+	perl -n -i -e 'print unless (s,.*: added to search path.*,,)' $<
+	perl -n -i -e 'print unless (s,.*: loaded.*,,)' $<
 	diff -Bwiu $^
 
 toplevel::
@@ -103,7 +106,7 @@ toplevel::
 %.mli: %.OCAMLVERSIONED.mli
 	cppo -V OCAML:$(ocamlVERSION) $< > $@.NEW && mv $@.NEW $@
 
-.SUFFIXES: .cmo .cmi .ml .mll .mly .mli .cmx .cma .cmxa .cmt .cmti
+.SUFFIXES: .cmo .cmi .ml .mll .mly .mli .cmx .cma .cmxa .cmt .cmti .OCAMLVERSIONED.ML
 
 clean::
 	$(RM) -rf *.cm* *.o *.a *.byte *.opt *.log *.cache *.ppo *ppo.ml *ppo.mli _build/* .cmt *.odoc META mk_meta.ml mk_meta *.NEW *.corrected
